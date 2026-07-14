@@ -1,0 +1,4 @@
+interface:
+  display_name: "Torch Pytest Case Compare"
+  short_description: "Compare and analyze PyTorch pytest cases."
+  default_prompt: "Use $torch-pytest-case-compare to compare PyTorch pytest case sheets and enrich failures from logs."
