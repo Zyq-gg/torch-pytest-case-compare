@@ -8,12 +8,16 @@ description: Compare, normalize, deduplicate, and analyze PyTorch pytest cases f
 Use spreadsheet comparison as the primary workflow. Add log evidence or pytest
 reruns only when requested or when comparison results need deeper analysis.
 
+Resolve `SKILL_DIR` to the directory containing this `SKILL.md` before running
+commands. Always invoke bundled scripts through that absolute skill path so the
+workflow works regardless of the user's current working directory.
+
 ## Compare Spreadsheets
 
 Run the compatibility entry point:
 
 ```bash
-python scripts/compare_torch_pytest_sheets.py SHEET_DIR \
+python3 "$SKILL_DIR/scripts/compare_torch_pytest_sheets.py" SHEET_DIR \
   --csv SHEET_DIR/pytest_failures.csv \
   --out-dir OUTPUT_DIR
 ```
@@ -34,8 +38,8 @@ Use `--marker-column-name NAME` to change the marker header.
 ## Extract Failed Cases From Logs
 
 ```bash
-python scripts/extract_pytest_failures.py LOG... --output failures.csv
-python scripts/extract_pytest_failures.py LOG... --output failures.xlsx
+python3 "$SKILL_DIR/scripts/extract_pytest_failures.py" LOG... --output failures.csv
+python3 "$SKILL_DIR/scripts/extract_pytest_failures.py" LOG... --output failures.xlsx
 ```
 
 Use `--mode auto` by default. Auto mode recognizes run_test.py structure such
@@ -48,7 +52,7 @@ standalone pytest `FAILED`/`ERROR` summary rows. Use `--mode run-test` or
 ## Add Log Evidence
 
 ```bash
-python scripts/analyze_pytest_cases.py \
+python3 "$SKILL_DIR/scripts/analyze_pytest_cases.py" \
   --input OUTPUT_DIR/pytest_failures_analyzed.csv \
   --logs /path/to/run_test*.log \
   --output OUTPUT_DIR/pytest_failures_log_analyzed.csv \
@@ -65,10 +69,10 @@ medium-confidence matches update `问题类别` and `问题结论`. Use
 Reruns are explicit because PyTorch tests can be expensive:
 
 ```bash
-python scripts/rerun_pytest_cases.py \
+python3 "$SKILL_DIR/scripts/rerun_pytest_cases.py" \
   --input OUTPUT_DIR/pytest_failures_analyzed.csv \
   --output OUTPUT_DIR/pytest_failures_rerun.csv \
-  --repo /workspace/pytorch \
+  --repo /path/to/pytorch \
   --env /path/to/env.sh \
   --only-marker 新增 \
   --timeout 300
@@ -88,3 +92,7 @@ Use `--limit N` for a bounded trial.
 
 Read [references/workflows.md](references/workflows.md) when changing schemas,
 matching logic, output contracts, or rerun behavior.
+
+Run `python3 "$SKILL_DIR/scripts/self_check.py"` after a fresh clone or when
+checking portability. It creates synthetic inputs under a temporary directory
+and does not require the original Torch 2.9 fixtures or a PyTorch checkout.

@@ -122,7 +122,7 @@ def main() -> int:
     parser.add_argument("--input", required=True, type=Path)
     parser.add_argument("--output", type=Path, help="Output CSV; required unless --in-place is used")
     parser.add_argument("--in-place", action="store_true")
-    parser.add_argument("--repo", type=Path, default=Path("/workspace/pytorch"))
+    parser.add_argument("--repo", required=True, type=Path, help="Target PyTorch repository root")
     parser.add_argument("--env", dest="env_script", type=Path)
     parser.add_argument("--marker-column", default="case标记")
     parser.add_argument("--only-marker", help="Only rerun rows whose marker column equals this value, e.g. 新增")

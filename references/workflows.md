@@ -9,6 +9,18 @@
 5. Pytest reruns
 6. Validation
 
+## Portability
+
+Treat the directory containing `SKILL.md` as the skill root. Invoke bundled
+scripts using an absolute path derived from that root, not from the user's
+current working directory. The parsing and comparison workflows depend only on
+Python 3.10+ and files tracked in this repository.
+
+`rerun_pytest_cases.py` additionally requires an explicit `--repo` pointing to
+the target PyTorch checkout and a working pytest environment. An optional
+`--env` script may activate that target environment; neither is bundled because
+they are inputs to the rerun rather than skill dependencies.
+
 ## Case Identity
 
 Use the normalized tuple `(py_name, class_name, op_name)` everywhere.
@@ -116,3 +128,8 @@ For log workflows, test at least:
 - Multiple cases with the same method name in different classes.
 - A failing rerun, a passing rerun, a timeout, and zero selected rows.
 - Repeated analysis without duplicate conclusion text.
+
+Run `scripts/self_check.py` from a fresh clone for a repository-contained smoke
+test. It generates its own XLSX, CSV, run_test, pytest, and Inductor fixtures in
+a temporary directory, then validates comparison, extraction, analysis, status
+checking, and a zero-selection rerun without invoking external pytest.

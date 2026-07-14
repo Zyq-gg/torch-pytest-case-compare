@@ -25,6 +25,7 @@
 - 表格比较和日志提取仅使用 Python 标准库，不要求安装 `pandas` 或 `openpyxl`。
 - 单 case 重跑需要目标 PyTorch 仓库及其可运行的 pytest 环境。
 - 输入工作簿应为标准 Office Open XML 格式，即 `.xlsx` 或 `.xlsm`。
+- 仓库不依赖当前机器上的其他 skill、私有脚本或 fixture；解析所需代码均包含在本仓库中。
 
 ## 安装
 
@@ -53,6 +54,13 @@ git -C "${CODEX_HOME:-$HOME/.codex}/skills/torch-pytest-case-compare" pull --ff-
 git clone https://github.com/Zyq-gg/torch-pytest-case-compare.git
 cd torch-pytest-case-compare
 python3 scripts/compare_torch_pytest_sheets.py --help
+```
+
+克隆后可以先运行仓库自带的自检。它会在临时目录生成合成 XLSX、CSV
+和日志，不需要额外下载测试数据，也不会真正执行 pytest：
+
+```bash
+python3 scripts/self_check.py
 ```
 
 ## Case 三元组与归一化规则
@@ -290,6 +298,9 @@ python3 scripts/rerun_pytest_cases.py \
 
 不希望重跑结果覆盖原有 `问题类别/问题结论` 时，增加 `--no-update-analysis`。
 
+`--repo` 是必填参数。目标 PyTorch checkout 和其中的 pytest 运行环境属于
+用户输入，不是本 skill 的依赖，因此不会被打包进仓库。
+
 ## 五、辅助工具
 
 ### 检查 run_test 日志是否完整
@@ -389,12 +400,14 @@ torch-pytest-case-compare/
     ├── rerun_pytest_cases.py
     ├── log_failure_analysis.py
     ├── check_run_test_log_status.py
-    └── extract_inductor_unique_errors.py
+    ├── extract_inductor_unique_errors.py
+    └── self_check.py
 ```
 
 - `SKILL.md`：Codex 加载 skill 后遵循的核心工作流程。
 - `references/workflows.md`：case identity、输出契约、日志匹配、重跑和验证细节。
 - `scripts/`：可独立执行或被 skill 调用的确定性脚本。
+- `scripts/self_check.py`：只使用仓库内容和 Python 标准库完成便携性自检。
 
 ## License
 
